@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { AuthStyles } from './AuthStyles';
+import { AuthStyles } from '../styles/AuthStyles';
 
 interface AuthFormState {
   name?: string;

@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import Colors from '../constants/Colors';
 import { router } from 'expo-router';
-
+import ListAlum from '../app/ListAlum';
 export default function HomeScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -30,7 +30,10 @@ export default function HomeScreen() {
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Upcoming Events</Text>
       </View>
+        {/* Add ListAlum here */}
+  <ListAlum />
     </ScrollView>
+  
   );
 }
 
