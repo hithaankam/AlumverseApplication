@@ -1,50 +1,58 @@
-# Welcome to your Expo app 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+#  Alumverse Frontend
 
-## Get started
+A cross-platform mobile frontend built using **React Native with Expo**, designed for seamless alumni interaction. This project is part of a full-stack app inspired by a modern social media-style architecture using Supabase for backend authentication and data handling.
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+Getting Started
 
-2. Start the app
+### Step 1: Project Setup with Expo
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+Using Expo for React Native development to ensure rapid cross-platform compatibility and easier development workflow.
 
 ```bash
-npm run reset-project
+npx create-expo-app frontend
+cd frontend
+npx expo start
+````
+
+> 🔹 Use **`a`** to open Android emulator (requires Android Studio).
+> 🔹 Use **`w`** to run in browser (faster but limited features).
+
+### Helpful Commands
+
+* `npm run reset-project` – Resets the project to initial state (based on `App.js` default template).
+* `npx expo-doctor` – Checks for incompatible or outdated dependencies.
+
+---
+
+## ⚙️ Libraries & Dependencies
+
+### Core Navigation
+
+```bash
+npm install @react-navigation/native @react-navigation/stack
+npx expo install react-native-screens react-native-safe-area-context
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### UI & Animation
 
-## Learn more
+```bash
+npx expo install expo-linear-gradient
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Used for card-flipping animation and gradient effects.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+>  Styling references were sourced from online UI/UX design resources to create modern-looking screens.
 
-## Join the community
 
-Join our community of developers creating universal apps.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Screens Implemented
+
+* Login Page (with validation and styled input)
+* Home Page
+* Card Flip UI using `expo-linear-gradient`
+* Error handling and state management using React Hooks (`useState`, `useEffect`)
+
+
