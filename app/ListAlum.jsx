@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAllAlumni } from '../services/AlumService'; // adjust path if needed
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ListAlum = () => {
   const [data, setData] = useState([]);

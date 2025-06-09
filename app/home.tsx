@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import Colors from '../constants/Colors';
 import { router } from 'expo-router';
 import ListAlum from '../app/ListAlum';
+import { Platform } from 'react-native';
 export default function HomeScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -84,13 +85,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 20,
     marginBottom: 16,
-    shadowColor: Colors.BLACK,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 3,
     borderWidth: 1,
     borderColor: Colors.GRAY_LIGHT,
+    elevation: 3,
+    boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.1)'
   },
   cardTitle: {
     fontSize: 18,
