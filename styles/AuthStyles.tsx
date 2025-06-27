@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import Colors from '../constants/Colors';
 
 export const AuthStyles = StyleSheet.create({
@@ -28,8 +28,17 @@ export const AuthStyles = StyleSheet.create({
     padding: 30,
     position: 'absolute',
     backfaceVisibility: 'hidden',
-boxShadow: '0px 10px 20px rgba(0, 0, 0, 0.1)',
-
+    elevation: 10,
+    ...(Platform.OS === 'web'
+      ? {
+          boxShadow: '0px 10px 20px rgba(0, 0, 0, 0.1)',
+        }
+      : {
+          shadowColor: Colors.BLACK,
+          shadowOffset: { width: 0, height: 10 },
+          shadowOpacity: 0.1,
+          shadowRadius: 20,
+        }),
   },
   inputContainer: {
     marginBottom: 16,
@@ -137,4 +146,5 @@ boxShadow: '0px 10px 20px rgba(0, 0, 0, 0.1)',
     marginBottom: 20,
     textAlign: 'center',
   },
+
 });

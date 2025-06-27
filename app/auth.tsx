@@ -13,6 +13,7 @@ import {
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { AuthStyles } from '../styles/AuthStyles';
+import { createAlumni } from '@/services/AlumService';
 
 interface AuthFormState {
   name?: string;
@@ -60,6 +61,8 @@ const AuthScreen = () => {
     }).start(() => setIsFlipped(!isFlipped));
   };
 
+
+
   // Animation interpolations
   const frontInterpolate = flipAnim.interpolate({
     inputRange: [0, 180],
@@ -90,8 +93,11 @@ const AuthScreen = () => {
   const handleLogin = () => {
     router.push('/home');
   };
-
+  const alumni = {name: signupForm.name, email: signupForm.email, password: signupForm.password};
   const handleSignup = () => {
+    createAlumni(alumni).then((response) => {
+      console.log(alumni)
+    });
     router.push('/home');
   };
 

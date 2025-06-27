@@ -1,10 +1,13 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Colors from '../constants/Colors';
 import { router } from 'expo-router';
+import  { HeaderComponent } from './components/HeaderComponent';
+import { FooterComponent } from './components/FooterComponent';
 
 export default function LandingPage() {
   return (
     <View style={styles.container}>
+      
       <Image 
         source={require('../assets/images/logo.png')} 
         style={styles.logo}
@@ -39,6 +42,7 @@ export default function LandingPage() {
       <TouchableOpacity onPress={() => router.push('/auth')}>
         <Text style={styles.linkText}>Already have an account? Login</Text>
       </TouchableOpacity>
+      
     </View>
   );
 }

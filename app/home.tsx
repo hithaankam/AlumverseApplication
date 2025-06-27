@@ -3,6 +3,7 @@ import Colors from '../constants/Colors';
 import { router } from 'expo-router';
 import ListAlum from '../app/ListAlum';
 import { Platform } from 'react-native';
+import { FooterComponent } from './components/FooterComponent';
 export default function HomeScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -32,6 +33,7 @@ export default function HomeScreen() {
         <Text style={styles.cardTitle}>Upcoming Events</Text>
       </View>
         {/* Add ListAlum here */}
+  
   <ListAlum />
     </ScrollView>
   

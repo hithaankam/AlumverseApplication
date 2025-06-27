@@ -6,5 +6,5 @@ export const getAllAlumni = () => {
   return axios.get(REST_API_BASE_URL);
 };
 
-
+export const createAlumni = (alumni) => axios.post(REST_API_BASE_URL, alumni);
 

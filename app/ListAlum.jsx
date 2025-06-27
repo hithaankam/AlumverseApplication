@@ -19,17 +19,19 @@ const ListAlum = () => {
       <table className="table table-striped table-bordered">
         <thead>
           <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
+            <th>Full Name</th>
+           
             <th>Email</th>
+            <th>Password</th>
           </tr>
         </thead>
         <tbody>
           {data.map((alum) => (
             <tr key={alum.id}>
-              <td>{alum.firstName}</td>
-              <td>{alum.lastName}</td>
+              <td>{alum.fullName}</td>
+              
               <td>{alum.email}</td>
+              <td>{alum.password}</td>
             </tr>
           ))}
         </tbody>
