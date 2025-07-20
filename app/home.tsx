@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import Colors from '../constants/Colors';
 import { router } from 'expo-router';
 import ListAlum from '../app/ListAlum';
+import AlumniSearch from '../app/AlumniSearch';
 import { Platform } from 'react-native';
 import { FooterComponent } from './components/FooterComponent';
 export default function HomeScreen() {
@@ -20,7 +21,7 @@ export default function HomeScreen() {
         <Text style={styles.getStartedText}>Get Started</Text>
       </TouchableOpacity>
       </View>
-      
+      <AlumniSearch />
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Recent Activity</Text>
       </View>
