@@ -9,14 +9,16 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { AxiosError } from 'axios';
 import { AuthStyles } from '../styles/AuthStyles';
-import { createAlumni } from '@/services/AlumService';
+import { authService } from '@/services/AlumService'; 
 
 interface AuthFormState {
-  name?: string;
+  fullName?: string;
   email: string;
   password: string;
   confirmPassword?: string;
@@ -37,7 +39,7 @@ const AuthScreen = () => {
   });
 
   const [signupForm, setSignupForm] = useState<AuthFormState>({
-    name: '',
+    fullName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -61,9 +63,6 @@ const AuthScreen = () => {
     }).start(() => setIsFlipped(!isFlipped));
   };
 
-
-
-  // Animation interpolations
   const frontInterpolate = flipAnim.interpolate({
     inputRange: [0, 180],
     outputRange: ['0deg', '180deg'],
@@ -76,29 +75,65 @@ const AuthScreen = () => {
 
   const frontAnimatedStyle = {
     transform: [{ perspective: 1000 }, { rotateY: frontInterpolate }],
-    opacity: flipAnim.interpolate({
-      inputRange: [0, 90],
-      outputRange: [1, 0],
-    }),
+    opacity: flipAnim.interpolate({ inputRange: [0, 90], outputRange: [1, 0] }),
   };
 
   const backAnimatedStyle = {
     transform: [{ perspective: 1000 }, { rotateY: backInterpolate }],
-    opacity: flipAnim.interpolate({
-      inputRange: [90, 180],
-      outputRange: [0, 1],
-    }),
+    opacity: flipAnim.interpolate({ inputRange: [90, 180], outputRange: [0, 1] }),
   };
 
-  const handleLogin = () => {
-    router.push('/home');
-  };
-  const alumni = {name: signupForm.name, email: signupForm.email, password: signupForm.password};
-  const handleSignup = () => {
-    createAlumni(alumni).then((response) => {
-      console.log(alumni)
+const handleLogin = async () => {
+  console.log("1. Login button pressed."); // See if the function starts
+  console.log("2. Sending data:", { email: loginForm.email, password: loginForm.password }); // Check the data
+  try {
+    const response = await authService.login({
+      email: loginForm.email,
+      password: loginForm.password,
     });
+    console.log("3. API call successful:", response.data); // See the response
+    authService.storeToken(response.data.accessToken);
     router.push('/home');
+  } catch (error) {
+    console.error("4. API call failed:", error); // See the exact error
+    // ... your alert code
+  }
+};
+  const handleSignup = async () => {
+    if (signupForm.password !== signupForm.confirmPassword) {
+        Alert.alert('Signup Error', 'Passwords do not match.');
+        return;
+    }
+
+    try {
+        // First, register the new user
+        await authService.register({
+            fullName: signupForm.fullName,
+            email: signupForm.email,
+            password: signupForm.password,
+        });
+
+        Alert.alert('Success', 'Registration successful! Logging you in...');
+
+        // Then, automatically log them in
+        const loginResponse = await authService.login({
+            email: signupForm.email,
+            password: signupForm.password,
+        });
+
+        // Store the token and navigate to the home screen
+        authService.storeToken(loginResponse.data.accessToken);
+        router.push('/home');
+
+    } catch (error) {
+        let errorMessage = 'An unexpected error occurred.';
+        if (error instanceof AxiosError) {
+          errorMessage = error.response?.data || 'Signup failed. Please try again.';
+        } else if (error instanceof Error) {
+          errorMessage = error.message;
+        }
+        Alert.alert('Signup Error', errorMessage);
+    }
   };
 
   return (
@@ -166,8 +201,8 @@ const AuthScreen = () => {
             <TextInput
               style={AuthStyles.input}
               placeholder="Enter your full name"
-              value={signupForm.name}
-              onChangeText={(text) => setSignupForm({...signupForm, name: text})}
+              value={signupForm.fullName}
+              onChangeText={(text) => setSignupForm({...signupForm, fullName: text})}
             />
           </View>
           
