@@ -8,12 +8,13 @@ export const AuthStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
-    backgroundColor: Colors.PRIMARY,
+    backgroundColor: Colors.primaryDark, // Use primaryDark for consistent background
   },
   logo: {
     width: 120,
     height: 120,
     marginBottom: 30,
+    tintColor: Colors.white, // Make logo white for contrast
   },
   cardContainer: {
     width: '100%',
@@ -23,7 +24,7 @@ export const AuthStyles = StyleSheet.create({
   card: {
     width: '100%',
     height: '100%',
-    backgroundColor: Colors.WHITE,
+    backgroundColor: Colors.white,
     borderRadius: 24,
     padding: 30,
     position: 'absolute',
@@ -34,7 +35,7 @@ export const AuthStyles = StyleSheet.create({
           boxShadow: '0px 10px 20px rgba(0, 0, 0, 0.1)',
         }
       : {
-          shadowColor: Colors.BLACK,
+          shadowColor: Colors.black,
           shadowOffset: { width: 0, height: 10 },
           shadowOpacity: 0.1,
           shadowRadius: 20,
@@ -45,31 +46,32 @@ export const AuthStyles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: Colors.GRAY_DARK,
+    color: Colors.gray600, // Use a darker gray for labels
     marginBottom: 8,
     fontWeight: '500',
   },
   input: {
     height: 50,
     borderWidth: 1,
-    borderColor: Colors.GRAY_LIGHT,
+    borderColor: Colors.gray200, // Softer border color
     borderRadius: 12,
     paddingHorizontal: 16,
-    backgroundColor: Colors.WHITE,
+    backgroundColor: Colors.white,
+    color: Colors.gray600, // Input text color
   },
   passwordInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: Colors.GRAY_LIGHT,
+    borderColor: Colors.gray200, // Softer border color
     borderRadius: 12,
-    backgroundColor: Colors.WHITE,
+    backgroundColor: Colors.white,
   },
   eyeIcon: {
     padding: 15,
   },
   errorText: {
-    color: '#ff4444',
+    color: Colors.error, // Use the new error color
     textAlign: 'center',
     marginBottom: 16,
     fontSize: 14,
@@ -82,14 +84,14 @@ export const AuthStyles = StyleSheet.create({
   loginButton: {
     height: 50,
     borderRadius: 12,
-    backgroundColor: Colors.PRIMARY,
+    backgroundColor: Colors.primary, // Use primary color for login button
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
     marginBottom: 24,
   },
   loginLinkText: {
-    color: Colors.PRIMARY,
+    color: Colors.primaryLight, // Use primaryLight for link text
     textAlign: 'center',
     fontWeight: '500',
   },
@@ -107,9 +109,9 @@ export const AuthStyles = StyleSheet.create({
   signupSecondaryButton: {
     height: 50,
     borderRadius: 12,
-    backgroundColor: Colors.WHITE,
+    backgroundColor: Colors.white, // White background
     borderWidth: 1,
-    borderColor: Colors.PRIMARY,
+    borderColor: Colors.gray200, // Softer border
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 16,
@@ -120,14 +122,14 @@ export const AuthStyles = StyleSheet.create({
   signupPrimaryButton: {
     height: 50,
     borderRadius: 12,
-    backgroundColor: Colors.PRIMARY,
+    backgroundColor: Colors.primary, // Use primary color for signup button
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
     flex: 1,
   },
   signupButtonText: {
-    color: Colors.PRIMARY,
+    color: Colors.primaryDark, // Use primaryDark for secondary button text
     fontWeight: 'bold',
     fontSize: 16,
     marginLeft: 5,
@@ -135,14 +137,14 @@ export const AuthStyles = StyleSheet.create({
 
   // Common styles
   buttonText: {
-    color: Colors.WHITE,
+    color: Colors.white, // White text for primary buttons
     fontWeight: 'bold',
     fontSize: 16,
   },
   cardTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: Colors.PRIMARY,
+    color: Colors.gray600, // Use a darker gray for card titles
     marginBottom: 20,
     textAlign: 'center',
   },
