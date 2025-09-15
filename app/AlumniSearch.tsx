@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, SafeAreaView } from 'react-native';
 import { searchAlumniByquery } from '@/services/AlumService';
 import Colors from '../constants/Colors'; 
 
@@ -32,7 +32,8 @@ const AlumniSearch = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.gray50 }}>
+      <View style={styles.container}>
       <Text style={styles.title}>Search Alumni</Text>
       <TextInput
         style={styles.input}
@@ -52,36 +53,38 @@ const AlumniSearch = () => {
         renderItem={({ item }) => (
           <View style={styles.resultItem}>
             <Text style={styles.resultName}>{item.fullName}</Text>
-            <Text>{item.email}</Text>
+            <Text style={{ color: Colors.gray500 }}>{item.email}</Text>
           </View>
         )}
       />
     </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1, // Make container take full height
     padding: 16,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 8,
-    marginVertical: 10,
+    backgroundColor: Colors.gray50, // Use light gray background
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: Colors.gray600, // Darker gray for title
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: Colors.gray200, // Softer border color
     borderRadius: 8,
     padding: 12,
     marginBottom: 10,
-    backgroundColor: Colors.WHITE,
+    backgroundColor: Colors.white,
+    color: Colors.gray600, // Input text color
   },
   button: {
-    backgroundColor: Colors.PRIMARY,
+    backgroundColor: Colors.primary, // Use primary color for button
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -91,16 +94,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   errorText: {
-    color: 'red',
+    color: Colors.error, // Use error color
     marginTop: 10,
   },
   resultItem: {
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: Colors.gray100, // Light gray for border
     paddingVertical: 10,
   },
   resultName: {
     fontWeight: 'bold',
+    color: Colors.gray600, // Darker gray for result name
   },
 });
 

@@ -15,6 +15,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { AxiosError } from 'axios';
 import { AuthStyles } from '../styles/AuthStyles';
+import Colors from '../constants/Colors'; // Import Colors
 import { authService } from '@/services/AlumService'; 
 
 interface AuthFormState {
@@ -266,7 +267,7 @@ const handleLogin = async () => {
           
           <View style={AuthStyles.signupButtonRow}>
             <TouchableOpacity style={AuthStyles.signupSecondaryButton} onPress={flipCard}>
-              <Ionicons name="arrow-back" size={20} color="#3b82f6" />
+              <Ionicons name="arrow-back" size={20} color={Colors.primaryDark} />
               <Text style={AuthStyles.signupButtonText}> Back</Text>
             </TouchableOpacity>
             
