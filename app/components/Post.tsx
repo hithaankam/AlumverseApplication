@@ -53,7 +53,7 @@ const Post = ({ post }: { post: PostProps }) => {
           <Ionicons
             name={liked ? 'heart' : 'heart-outline'}
             size={20}
-            color={liked ? Colors.PRIMARY : Colors.GRAY_DARK}
+            color={liked ? Colors.error : Colors.gray400} // Use error color for liked, gray for unliked
           />
           <Text style={[styles.actionText, liked && styles.likedText]}>
             {likeCount}
@@ -61,12 +61,12 @@ const Post = ({ post }: { post: PostProps }) => {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.actionButton}>
-          <Ionicons name="chatbubble-outline" size={20} color={Colors.GRAY_DARK} />
+          <Ionicons name="chatbubble-outline" size={20} color={Colors.gray400} />
           <Text style={styles.actionText}>{post.comments || 0}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.actionButton}>
-          <Ionicons name="share-outline" size={20} color={Colors.GRAY_DARK} />
+          <Ionicons name="share-outline" size={20} color={Colors.gray400} />
         </TouchableOpacity>
       </View>
     </View>
@@ -76,9 +76,16 @@ const Post = ({ post }: { post: PostProps }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.GRAY_LIGHT,
-    backgroundColor: Colors.WHITE,
+    marginBottom: 10, // Add margin bottom for separation between posts
+    borderRadius: 10,
+    backgroundColor: Colors.white, // White background for posts
+    borderWidth: 1,
+    borderColor: Colors.gray100, // Subtle border
+    shadowColor: Colors.black, // Add subtle shadow
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1, // For Android shadow
   },
   header: {
     flexDirection: 'row',
@@ -97,16 +104,16 @@ const styles = StyleSheet.create({
   author: {
     fontWeight: 'bold',
     fontSize: 16,
-    color: Colors.PRIMARY,
+    color: Colors.gray600, // Darker gray for author name
   },
   timestamp: {
     fontSize: 12,
-    color: Colors.GRAY_DARK,
+    color: Colors.gray400, // Medium gray for timestamp
   },
   content: {
     fontSize: 14,
     marginBottom: 10,
-    color: Colors.GRAY_DARK,
+    color: Colors.gray500, // Dark gray for post content
     lineHeight: 20,
   },
   actions: {
@@ -114,7 +121,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     paddingTop: 10,
     borderTopWidth: 1,
-    borderTopColor: Colors.GRAY_LIGHT,
+    borderTopColor: Colors.gray100, // Light gray for action separator
   },
   actionButton: {
     flexDirection: 'row',
@@ -123,10 +130,10 @@ const styles = StyleSheet.create({
   },
   actionText: {
     marginLeft: 5,
-    color: Colors.GRAY_DARK,
+    color: Colors.gray500, // Dark gray for action text
   },
   likedText: {
-    color: Colors.PRIMARY,
+    color: Colors.error, // Error color for liked text
   },
 });
 
