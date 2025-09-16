@@ -9,7 +9,8 @@ import {
   Image,
   Dimensions,
   SafeAreaView,
-  FlatList
+  FlatList,
+  Animated
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors'; // Import Colors from constants
@@ -27,6 +28,15 @@ const WelcomeScreen = () => {
   const [query, setQuery] = useState("");
   const [allAlumni, setAllAlumni] = useState<Alumni[]>([]); // Initialize with empty array
   const [filteredAlumni, setFilteredAlumni] = useState<Alumni[]>([]);
+  const fadeAnim = useState(new Animated.Value(0))[0];
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
   // Fetch real alumni data on component mount
   const loadAlumni = () => {
@@ -68,9 +78,10 @@ const WelcomeScreen = () => {
   };
 
   return (
+    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
-          {/* Header with logo and tagline */}
+          {/* Header with logo */}
           <View style={styles.header}>
             <Image 
               source={require('../assets/images/logo.png')} 
@@ -139,6 +150,7 @@ const WelcomeScreen = () => {
         <View style={[styles.shape, styles.shapeGreen]} />
       </ScrollView>
     </SafeAreaView>
+  </Animated.View>
   );
 };
 

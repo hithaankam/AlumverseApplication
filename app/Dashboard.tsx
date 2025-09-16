@@ -16,12 +16,6 @@ const JobPortalScreen = () => (
   </View>
 );
 
-const OpportunitiesScreen = () => (
-  <View style={styles.tabContent}>
-    <Text style={styles.tabContentText}>Opportunities Content</Text>
-  </View>
-);
-
 const EventsScreen = () => (
   <View style={styles.tabContent}>
     <Text style={styles.tabContentText}>Events Content</Text>
@@ -74,7 +68,6 @@ const Dashboard = () => {
           <Tab.Screen name="Feed" component={Feed} />
           <Tab.Screen name="Job Portal" component={JobPortalScreen} />
           <Tab.Screen name="Directory" component={AlumniSearch} />
-          <Tab.Screen name="Opportunities" component={OpportunitiesScreen} />
           <Tab.Screen name="Events" component={EventsScreen} />
           <Tab.Screen name="Giving Back" component={GivingBackScreen} />
           <Tab.Screen name="Feedback & Polls" component={FeedbackPollsScreen} />
@@ -92,11 +85,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     backgroundColor: Colors.white,
     borderBottomWidth: 1,
     borderBottomColor: Colors.subtleBorder,
+    shadowColor: Colors.black,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
   },
   headerTitle: {
     fontSize: 20,

@@ -13,11 +13,29 @@ export interface PostProps {
   likesCount?: number;
   comments?: number;
   timestamp?: string;
+  image?: string;
+  video?: string;
 }
+
+const formatRelativeTime = (timestamp: string | undefined): string => {
+  if (!timestamp) return 'now';
+  
+  const now = new Date();
+  const postTime = new Date(timestamp);
+  const diffInSeconds = Math.floor((now.getTime() - postTime.getTime()) / 1000);
+  
+  if (diffInSeconds < 60) return 'now';
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m`;
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h`;
+  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d`;
+  
+  return postTime.toLocaleDateString();
+};
 
 const Post = ({ post }: { post: PostProps }) => {
   const [liked, setLiked] = React.useState(false);
   const [likeCount, setLikeCount] = React.useState(post.likesCount || 0);
+  const [pressedButton, setPressedButton] = React.useState<string | null>(null);
 
   const handleLike = async () => {
     const newLikedState = !liked;
@@ -42,31 +60,74 @@ const Post = ({ post }: { post: PostProps }) => {
         />
         <View style={styles.userInfo}>
           <Text style={styles.author}>{post.authorId}</Text>
-          <Text style={styles.timestamp}>{post.timestamp || '2h ago'}</Text>
+          <Text style={styles.timestamp}>{formatRelativeTime(post.timestamp)}</Text>
         </View>
       </View>
 
       <Text style={styles.content}>{post.content}</Text>
 
+      {/* Image/Video Preview */}
+      {post.image && (
+        <Image source={{ uri: post.image }} style={styles.mediaPreview} />
+      )}
+      {post.video && (
+        <View style={styles.videoPreview}>
+          <Ionicons name="play-circle" size={48} color={Colors.white} />
+          <Text style={styles.videoText}>Video</Text>
+        </View>
+      )}
+
       <View style={styles.actions}>
-        <TouchableOpacity style={styles.actionButton} onPress={handleLike}>
+        <TouchableOpacity 
+          style={[
+            styles.actionButton, 
+            pressedButton === 'like' && styles.pressedButton
+          ]} 
+          onPress={handleLike}
+          onPressIn={() => setPressedButton('like')}
+          onPressOut={() => setPressedButton(null)}
+        >
           <Ionicons
             name={liked ? 'heart' : 'heart-outline'}
             size={20}
-            color={liked ? Colors.error : Colors.gray400} // Use error color for liked, gray for unliked
+            color={liked ? '#FF3040' : (pressedButton === 'like' ? Colors.primary : Colors.gray400)}
           />
-          <Text style={[styles.actionText, liked && styles.likedText]}>
-            {likeCount}
-          </Text>
+          {likeCount > 0 && (
+            <Text style={styles.actionCount}>{likeCount}</Text>
+          )}
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.actionButton}>
-          <Ionicons name="chatbubble-outline" size={20} color={Colors.gray400} />
-          <Text style={styles.actionText}>{post.comments || 0}</Text>
+        <TouchableOpacity 
+          style={[
+            styles.actionButton, 
+            pressedButton === 'comment' && styles.pressedButton
+          ]}
+          onPressIn={() => setPressedButton('comment')}
+          onPressOut={() => setPressedButton(null)}
+        >
+          <Ionicons 
+            name="chatbubble-outline" 
+            size={20} 
+            color={pressedButton === 'comment' ? Colors.primary : Colors.gray400} 
+          />
+          {(post.comments || 0) > 0 && (
+            <Text style={styles.actionCount}>{post.comments}</Text>
+          )}
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.actionButton}>
-          <Ionicons name="share-outline" size={20} color={Colors.gray400} />
+        <TouchableOpacity 
+          style={[
+            styles.actionButton, 
+            pressedButton === 'share' && styles.pressedButton
+          ]}
+          onPressIn={() => setPressedButton('share')}
+          onPressOut={() => setPressedButton(null)}
+        >
+          <Ionicons 
+            name="share-outline" 
+            size={20} 
+            color={pressedButton === 'share' ? Colors.primary : Colors.gray400} 
+          />
         </TouchableOpacity>
       </View>
     </View>
@@ -75,65 +136,104 @@ const Post = ({ post }: { post: PostProps }) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 15,
-    marginBottom: 10, // Add margin bottom for separation between posts
-    borderRadius: 10,
-    backgroundColor: Colors.white, // White background for posts
-    borderWidth: 1,
-    borderColor: Colors.gray100, // Subtle border
-    shadowColor: Colors.black, // Add subtle shadow
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1, // For Android shadow
+    padding: 20,
+    marginHorizontal: 16,
+    marginBottom: 16,
+    borderRadius: 12,
+    backgroundColor: Colors.white,
+    maxWidth: 600,
+    alignSelf: 'center',
+    width: '100%',
+    shadowColor: Colors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 16,
   },
   avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    marginRight: 12,
   },
   userInfo: {
     flex: 1,
   },
   author: {
-    fontWeight: 'bold',
+    fontWeight: '600',
     fontSize: 16,
-    color: Colors.gray600, // Darker gray for author name
+    color: Colors.black,
+    marginBottom: 2,
   },
   timestamp: {
     fontSize: 12,
-    color: Colors.gray400, // Medium gray for timestamp
+    color: '#70757A',
   },
   content: {
+    fontSize: 16,
+    marginBottom: 16,
+    color: '#202124',
+    lineHeight: 24,
+  },
+  mediaPreview: {
+    width: '100%',
+    maxHeight: 300,
+    borderRadius: 8,
+    marginBottom: 16,
+    resizeMode: 'cover',
+  },
+  videoPreview: {
+    width: '100%',
+    height: 200,
+    backgroundColor: Colors.black,
+    borderRadius: 8,
+    marginBottom: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  videoText: {
+    color: Colors.white,
     fontSize: 14,
-    marginBottom: 10,
-    color: Colors.gray500, // Dark gray for post content
-    lineHeight: 20,
+    marginTop: 8,
   },
   actions: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingTop: 10,
+    paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: Colors.gray100, // Light gray for action separator
+    borderTopColor: Colors.gray100,
   },
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 6,
   },
-  actionText: {
-    marginLeft: 5,
-    color: Colors.gray500, // Dark gray for action text
+  actionLabel: {
+    marginLeft: 6,
+    color: Colors.gray500,
+    fontSize: 14,
+    fontWeight: '500',
   },
-  likedText: {
-    color: Colors.error, // Error color for liked text
+  actionCount: {
+    marginLeft: 6,
+    color: Colors.gray400,
+    fontSize: 13,
+  },
+  likedLabel: {
+    color: '#FF3040',
+  },
+  pressedButton: {
+    backgroundColor: Colors.gray50,
+  },
+  pressedLabel: {
+    color: Colors.primary,
   },
 });
 
