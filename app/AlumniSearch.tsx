@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, SafeAreaView } from 'react-native';
-import { searchAlumniByquery } from '@/services/AlumService';
-import Colors from '../constants/Colors'; 
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, StyleSheet, FlatList, SafeAreaView } from 'react-native';
+import { getAllAlumni } from '../services/AlumService'; // Assuming search is client-side now
+import Colors from '../constants/Colors';
 
 interface Alumni {
   id: string;
@@ -11,100 +11,110 @@ interface Alumni {
 
 const AlumniSearch = () => {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<Alumni[]>([]);
+  const [allAlumni, setAllAlumni] = useState<Alumni[]>([]);
+  const [filteredAlumni, setFilteredAlumni] = useState<Alumni[]>([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSearch = () => {
-    if (!query) {
-      setError("Please enter a name");
-      return;
-    }
-
-    searchAlumniByquery(query)
+  const loadAlumni = () => {
+    setLoading(true);
+    getAllAlumni()
       .then((response) => {
-        setResults(response.data);
+        setAllAlumni(response.data);
+        setFilteredAlumni(response.data);
         setError("");
       })
       .catch(() => {
-        setError("Search Not Found");
-        setResults([]);
+        setError("Could not load alumni.");
+        setAllAlumni([]);
+        setFilteredAlumni([]);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
+
+  useEffect(() => {
+    loadAlumni();
+  }, []);
+
+  useEffect(() => {
+    if (query) {
+      const lowercasedQuery = query.toLowerCase();
+      const filteredData = allAlumni.filter(item =>
+        (item.fullName && item.fullName.toLowerCase().includes(lowercasedQuery)) ||
+        (item.email && item.email.toLowerCase().includes(lowercasedQuery))
+      );
+      setFilteredAlumni(filteredData);
+    } else {
+      setFilteredAlumni(allAlumni);
+    }
+  }, [query, allAlumni]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.gray50 }}>
       <View style={styles.container}>
-      <Text style={styles.title}>Search Alumni</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter name"
-        value={query}
-        onChangeText={setQuery}
-      />
-      <TouchableOpacity style={styles.button} onPress={handleSearch}>
-        <Text style={styles.buttonText}>Search</Text>
-      </TouchableOpacity>
+        <Text style={styles.title}>Alumni Directory</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Search by name or email"
+          value={query}
+          onChangeText={setQuery}
+        />
 
-      {error && <Text style={styles.errorText}>{error}</Text>}
+        {error && <Text style={styles.errorText}>{error}</Text>}
 
-      <FlatList
-        data={results}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.resultItem}>
-            <Text style={styles.resultName}>{item.fullName}</Text>
-            <Text style={{ color: Colors.gray500 }}>{item.email}</Text>
-          </View>
-        )}
-      />
-    </View>
+        <FlatList
+          data={filteredAlumni}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.resultItem}>
+              <Text style={styles.resultName}>{item.fullName}</Text>
+              <Text style={{ color: Colors.gray500 }}>{item.email}</Text>
+            </View>
+          )}
+          onRefresh={loadAlumni}
+          refreshing={loading}
+        />
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Make container take full height
+    flex: 1,
     padding: 16,
-    backgroundColor: Colors.gray50, // Use light gray background
+    backgroundColor: Colors.gray50,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: Colors.gray600, // Darker gray for title
+    color: Colors.gray600,
   },
   input: {
     borderWidth: 1,
-    borderColor: Colors.gray200, // Softer border color
+    borderColor: Colors.gray200,
     borderRadius: 8,
     padding: 12,
     marginBottom: 10,
     backgroundColor: Colors.white,
-    color: Colors.gray600, // Input text color
-  },
-  button: {
-    backgroundColor: Colors.primary, // Use primary color for button
-    padding: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: Colors.WHITE,
-    fontWeight: 'bold',
+    color: Colors.gray600,
   },
   errorText: {
-    color: Colors.error, // Use error color
+    color: Colors.error,
     marginTop: 10,
+    textAlign: 'center',
   },
   resultItem: {
     borderBottomWidth: 1,
-    borderBottomColor: Colors.gray100, // Light gray for border
+    borderBottomColor: Colors.gray100,
     paddingVertical: 10,
   },
   resultName: {
     fontWeight: 'bold',
-    color: Colors.gray600, // Darker gray for result name
+    color: Colors.gray600,
   },
 });
 
