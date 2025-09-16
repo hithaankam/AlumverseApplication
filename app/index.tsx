@@ -1,9 +1,6 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import Colors from '../constants/Colors';
 import { router } from 'expo-router';
-// HeaderComponent and FooterComponent are not used in this file, so they can be removed if not needed elsewhere.
-// import { HeaderComponent } from './components/HeaderComponent';
-// import { FooterComponent } from './components/FooterComponent';
 
 export default function LandingPage() {
   return (
@@ -12,6 +9,7 @@ export default function LandingPage() {
         <Image 
           source={require('../assets/images/logo.png')} 
           style={styles.logo}
+          tintColor={Colors.primary}
         />
         
         <Text style={styles.title}>Welcome to Alumverse</Text>
@@ -52,7 +50,7 @@ export default function LandingPage() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: Colors.primaryDark, // Use the new primaryDark for the background
+    backgroundColor: Colors.lightBackground,
   },
   container: {
     flex: 1,
@@ -64,12 +62,12 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     marginBottom: 30,
-    tintColor: Colors.white, // Make logo white for contrast
+    tintColor: Colors.primary,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: Colors.white, // Use white for the title
+    color: Colors.black,
     marginBottom: 40,
     textAlign: 'center',
   },
@@ -78,47 +76,49 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   featureCard: {
-    backgroundColor: Colors.white, // White background for cards
+    backgroundColor: Colors.white,
     borderRadius: 12,
     padding: 20,
     marginBottom: 16,
-    shadowColor: Colors.black, // Add subtle shadow
+    shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3, // For Android shadow
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: Colors.subtleBorder,
   },
   featureTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.primaryDark, // Use primaryDark for feature titles
+    color: Colors.primary,
     marginBottom: 8,
   },
   featureText: {
     fontSize: 14,
-    color: Colors.gray500, // Use a darker gray for feature text
+    color: Colors.grayText,
   },
   primaryButton: {
     width: '100%',
     height: 50,
     borderRadius: 12,
-    backgroundColor: Colors.secondary, // Use secondary color for the main button
+    backgroundColor: Colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
     shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
   },
   buttonText: {
-    color: Colors.white, // White text for the primary button
+    color: Colors.white,
     fontWeight: 'bold',
     fontSize: 16,
   },
   linkText: {
-    color: Colors.white, // White for the link text
+    color: Colors.primary,
     textAlign: 'center',
     fontWeight: '500',
   },

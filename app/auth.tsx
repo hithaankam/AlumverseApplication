@@ -94,7 +94,7 @@ const handleLogin = async () => {
     });
     console.log("3. API call successful:", response.data); // See the response
     authService.storeToken(response.data.accessToken);
-    router.push('/home');
+    router.push('/Dashboard');
   } catch (error) {
     console.error("4. API call failed:", error); // See the exact error
     // ... your alert code
@@ -124,7 +124,7 @@ const handleLogin = async () => {
 
         // Store the token and navigate to the home screen
         authService.storeToken(loginResponse.data.accessToken);
-        router.push('/home');
+        router.push('/Dashboard');
 
     } catch (error) {
         let errorMessage = 'An unexpected error occurred.';

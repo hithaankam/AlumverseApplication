@@ -12,6 +12,9 @@ export default function RootLayout() {
           <Stack.Screen name="auth" />
           <Stack.Screen name="home" />
           <Stack.Screen name="feed" />
+          <Stack.Screen name="Dashboard" />
+          <Stack.Screen name="ViewProfile" />
+          <Stack.Screen name="EditProfile" />
           {/* Add other screens as needed */}
           <Stack.Screen name="+not-found" />
         </Stack>
