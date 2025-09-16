@@ -1,262 +1,212 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
-  TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
-  ActivityIndicator,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+  Image,
   Alert,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 import Colors from '../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
-import { authService } from '../services/AlumService'; // Assuming a service for profile management
-
-interface UserProfile {
-  fullName: string;
-  email: string;
-  // Add other profile fields as needed
-}
 
 const EditProfile = () => {
-  const [formData, setFormData] = useState<UserProfile>({
-    fullName: '',
-    email: '',
-  });
-  const [loading, setLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const insets = useSafeAreaInsets();
+  const [fullName, setFullName] = useState('John Doe');
+  const [headline, setHeadline] = useState('Software Engineer at Google | Class of 2020');
+  const [location, setLocation] = useState('San Francisco, CA');
+  const [about, setAbout] = useState(
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+  );
+  const [education, setEducation] = useState('University of Example - B.S. Computer Science (2016-2020)');
+  const [experience, setExperience] = useState(
+    'Software Engineer at Google (2020-Present)\nIntern at Microsoft (Summer 2019)'
+  );
+  const [skills, setSkills] = useState('React Native, JavaScript, Python, AWS, UI/UX Design');
 
-  // Dummy userId for now, replace with actual user ID from auth context
-  const userId = 'dummyUserId'; 
-
-  // Fetch user details
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        setLoading(true);
-        // Replace with actual API call to get user profile
-        // const response = await authService.getProfile(userId); 
-        // setFormData(response.data);
-        // Simulating API call
-        setTimeout(() => {
-          setFormData({
-            fullName: 'John Doe',
-            email: 'john.doe@example.com',
-          });
-          setLoading(false);
-        }, 1000);
-      } catch (err) {
-        setError('Failed to load profile.');
-        setLoading(false);
-        console.error('Error fetching profile:', err);
-      }
-    };
-    fetchProfile();
-  }, [userId]);
-
-  const handleChange = (name: keyof UserProfile, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handleSave = () => {
+    // Here you would typically send the updated data to your backend
+    Alert.alert('Profile Saved', 'Your profile has been updated successfully!');
+    router.back(); // Go back to ViewProfile after saving
   };
-
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
-    setMessage('');
-    setError('');
-
-    try {
-      // Replace with actual API call to update user profile
-      // await authService.updateProfile(userId, formData);
-      // Simulating API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      setMessage('Profile updated successfully!');
-      Alert.alert('Success', 'Profile updated successfully!');
-    } catch (err) {
-      setError('Error updating profile.');
-      Alert.alert('Error', 'Failed to update profile.');
-      console.error('Error updating profile:', err);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <SafeAreaView style={styles.centered}>
-        <ActivityIndicator size="large" color={Colors.primary} />
-        <Text style={styles.loadingText}>Loading profile...</Text>
-      </SafeAreaView>
-    );
-  }
-
-  if (error && !message) {
-    return (
-      <SafeAreaView style={styles.centered}>
-        <Text style={styles.errorText}>{error}</Text>
-        <TouchableOpacity style={styles.retryButton} onPress={() => { /* retry logic */ }}>
-          <Text style={styles.retryButtonText}>Retry</Text>
-        </TouchableOpacity>
-      </SafeAreaView>
-    );
-  }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardAvoidingView}
-      >
-        <View style={styles.container}>
-          <Text style={styles.title}>Edit Profile</Text>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <Ionicons name="close-outline" size={28} color={Colors.black} />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Edit Profile</Text>
+        <TouchableOpacity onPress={handleSave} style={styles.saveButton}>
+          <Text style={styles.saveButtonText}>Save</Text>
+        </TouchableOpacity>
+      </View>
 
-          {message && <Text style={styles.successMessage}>{message}</Text>}
-          {error && <Text style={styles.errorMessage}>{error}</Text>}
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Full Name</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Full Name"
-              placeholderTextColor={Colors.gray400}
-              value={formData.fullName}
-              onChangeText={(text) => handleChange('fullName', text)}
-              editable={!isSubmitting}
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Email</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              placeholderTextColor={Colors.gray400}
-              value={formData.email}
-              onChangeText={(text) => handleChange('email', text)}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              editable={!isSubmitting}
-            />
-          </View>
-
-          {/* Add more profile fields here */}
-
-          <TouchableOpacity
-            style={[styles.button, isSubmitting && styles.buttonDisabled]}
-            onPress={handleSubmit}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <ActivityIndicator color={Colors.white} />
-            ) : (
-              <Text style={styles.buttonText}>Update Profile</Text>
-            )}
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        {/* Profile Picture */}
+        <View style={styles.profilePictureContainer}>
+          <Image source={require('../assets/images/icon.png')} style={styles.profilePicture} />
+          <TouchableOpacity style={styles.changePhotoOverlay}>
+            <Ionicons name="camera-outline" size={30} color={Colors.white} />
           </TouchableOpacity>
         </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+
+        {/* Basic Info Fields */}
+        <View style={styles.sectionCard}>
+          <Text style={styles.label}>Full Name</Text>
+          <TextInput style={styles.input} value={fullName} onChangeText={setFullName} />
+
+          <Text style={styles.label}>Headline</Text>
+          <TextInput style={styles.input} value={headline} onChangeText={setHeadline} />
+
+          <Text style={styles.label}>Location</Text>
+          <TextInput style={styles.input} value={location} onChangeText={setLocation} />
+        </View>
+
+        {/* About Section */}
+        <View style={styles.sectionCard}>
+          <Text style={styles.label}>About</Text>
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            value={about}
+            onChangeText={setAbout}
+            multiline
+            numberOfLines={4}
+          />
+        </View>
+
+        {/* Education Section */}
+        <View style={styles.sectionCard}>
+          <Text style={styles.label}>Education</Text>
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            value={education}
+            onChangeText={setEducation}
+            multiline
+            numberOfLines={3}
+          />
+        </View>
+
+        {/* Experience Section */}
+        <View style={styles.sectionCard}>
+          <Text style={styles.label}>Experience</Text>
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            value={experience}
+            onChangeText={setExperience}
+            multiline
+            numberOfLines={5}
+          />
+        </View>
+
+        {/* Skills Section */}
+        <View style={styles.sectionCard}>
+          <Text style={styles.label}>Skills</Text>
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            value={skills}
+            onChangeText={setSkills}
+            multiline
+            numberOfLines={2}
+          />
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: Colors.gray50,
-  },
-  keyboardAvoidingView: {
-    flex: 1,
-  },
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: Colors.gray50,
+    backgroundColor: Colors.lightBackground,
   },
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
+  header: {
+    flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.gray50,
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: Colors.gray500,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: Colors.gray600,
-    marginBottom: 25,
-    textAlign: 'center',
-  },
-  inputGroup: {
-    marginBottom: 15,
-  },
-  label: {
-    fontSize: 14,
-    color: Colors.gray600,
-    marginBottom: 8,
-    fontWeight: '500',
-  },
-  input: {
-    height: 50,
-    borderWidth: 1,
-    borderColor: Colors.gray200,
-    borderRadius: 10,
+    justifyContent: 'space-between',
     paddingHorizontal: 15,
+    paddingVertical: 10,
     backgroundColor: Colors.white,
-    fontSize: 16,
-    color: Colors.gray600,
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.subtleBorder,
   },
-  button: {
+  backButton: {
+    padding: 5,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.black,
+  },
+  saveButton: {
     backgroundColor: Colors.primary,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+  },
+  saveButtonText: {
+    color: Colors.white,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  scrollViewContent: {
     padding: 15,
-    borderRadius: 10,
+  },
+  profilePictureContainer: {
     alignItems: 'center',
-    marginTop: 20,
+    marginBottom: 20,
+    position: 'relative',
+  },
+  profilePicture: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 3,
+    borderColor: Colors.primary,
+  },
+  changePhotoOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    right: '35%', // Adjust to center over the bottom right of the image
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: 20,
+    padding: 8,
+  },
+  sectionCard: {
+    backgroundColor: Colors.white,
+    padding: 20,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: Colors.subtleBorder,
+    marginBottom: 15,
     shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
     elevation: 3,
   },
-  buttonDisabled: {
-    backgroundColor: Colors.gray300,
-  },
-  buttonText: {
-    color: Colors.white,
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
-  successMessage: {
-    color: Colors.success,
-    textAlign: 'center',
-    marginBottom: 15,
+  label: {
     fontSize: 16,
+    fontWeight: '600',
+    color: Colors.black,
+    marginBottom: 8,
   },
-  errorMessage: {
-    color: Colors.error,
-    textAlign: 'center',
-    marginBottom: 15,
-    fontSize: 16,
-  },
-  retryButton: {
-    backgroundColor: Colors.primaryLight,
-    padding: 10,
+  input: {
+    borderWidth: 1,
+    borderColor: Colors.subtleBorder,
     borderRadius: 8,
-    marginTop: 10,
+    padding: 12,
+    fontSize: 16,
+    color: Colors.black,
+    marginBottom: 15,
   },
-  retryButtonText: {
-    color: Colors.primary,
-    fontWeight: 'bold',
+  textArea: {
+    minHeight: 80,
+    textAlignVertical: 'top',
   },
 });
 

@@ -1,48 +1,57 @@
-### User Account & Onboarding
+Main Profile Section
+This section would be at the top of the dashboard, providing an at-a-glance summary of the user's identity on the platform.
 
-This section now details the different ways users will join and manage their accounts.
+Profile button: Displays the user's profile picture, email id 
 
-* **Self-Service Registration (for Students & Management):** Current students and faculty can sign up on their own using their official college email address for instant and automatic verification.
-* **Profile Claiming (for Alumni & Recruiters):** Alumni and recruiters from the initial database will "claim" their pre-loaded profiles. They'll enter their email, receive a secure link, and set their own password to activate their account.
-* **Profile Management ("My Profile"):** A personal dashboard for all users to update their information[cite: 22]. This section will also include a feature that prompts graduating students to add a personal email to ensure a smooth transition from "Student" to "Alumni" status.
-***
+Action Buttons: Quick links to "View Full Profile" and "Edit Profile."
 
-### Admin-Specific Features
+Rewards Overview: A small section to display earned rewards and badges to encourage engagement.
 
-These are features specifically for the administrator to manage the platform.
+Horizontal Tab Navigation
+Below the profile section, a clean tab bar allows users to switch between the main functions of the platform.
 
-* **Bulk User Import:** A tool for the admin to upload the initial database of alumni and recruiters to pre-populate the platform.
-* **Registration Approval Queue:** A dashboard where the admin can review and manually approve registration requests from new alumni or recruiters who were not in the initial database.
+1. Feed
+This is the main social hub for community interaction.
 
-***
+Community Posts: A central feed where users can see updates from their network.
 
-### Engagement & Networking
+Spotlight Stories: A highlighted section within the feed to showcase major alumni achievements.
 
-These features are focused on building community and interaction.
+2. Job Portal
+A dedicated space for career opportunities.
 
-**Networking Hub:** A central space for alumni to connect and interact
+Job Listings: A list of open positions posted by alumni and partner companies.
 
-***
+Search and Filters: Tools to filter jobs by location, industry, and experience level.
 
-### Career & Professional Development
+3. Directory
+The central networking tool for finding and connecting with others.
 
-These features provide tangible career and skill-building benefits.
+Alumni Search: A powerful search bar to find alumni by name, graduation year, company, or skills.
 
-**Job Portal:** A dedicated section for posting and finding job opportunities.
-**Event Management:** A tool for creating and managing events like workshops and reunions[cite: 5, 22].
+Connection Requests: Functionality to send and manage connection requests.
 
-***
+4. Opportunities
+A section focused on professional growth and collaboration.
 
-### Recognition & Gamification
+Mentorship Program: A directory of available mentors and a system for students and alumni to request mentorship.
 
-These features are designed to encourage participation and celebrate success.
+Collaborative Projects: A space to find and join projects initiated by other alumni.
 
-**Spotlight Stories:** Highlights alumni achievements through stories and podcasts
-**Rewards, Incentives, and Badges:** A system to reward users for their engagement on the platform
+Skill Exchange: A feature for users to offer or seek specific skills from the community.
 
-***
+5. Events
+All information related to institutional and alumni-run events.
 
-### Institutional Support
+Events Calendar: A list or calendar view of upcoming events and workshops.
 
-This feature is focused on connecting alumni back to the institution.
-**Secure Donations / Funding Drive:** A secure way for alumni to make financial contributions, with payments processed by **Google Pay**
+RSVP and Ticketing: Functionality for users to register for events.
+
+6. Giving Back
+A dedicated area for alumni to support the institution.
+
+Funding Drives: Information and links to ongoing fundraising campaigns.
+
+7. Feedback & Polls: A section for the institution to gather feedback from the alumni community.
+
+This layout organizes all your planned features into a clean, modern, and user-friendly interface.

@@ -8,13 +8,12 @@ export const AuthStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
-    backgroundColor: Colors.primaryDark, // Use primaryDark for consistent background
+    backgroundColor: Colors.lightBackground, // Changed to lightBackground
   },
   logo: {
     width: 120,
     height: 120,
     marginBottom: 30,
-    tintColor: Colors.white, // Make logo white for contrast
   },
   cardContainer: {
     width: '100%',
@@ -25,20 +24,22 @@ export const AuthStyles = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: Colors.white,
-    borderRadius: 24,
+    borderRadius: 20, // Increased borderRadius
     padding: 30,
     position: 'absolute',
     backfaceVisibility: 'hidden',
     elevation: 10,
+    borderWidth: 1, // Added border
+    borderColor: Colors.subtleBorder, // Added border color
     ...(Platform.OS === 'web'
       ? {
-          boxShadow: '0px 10px 20px rgba(0, 0, 0, 0.1)',
+          boxShadow: '0px 15px 30px rgba(0, 0, 0, 0.05)', // Adjusted shadow
         }
       : {
           shadowColor: Colors.black,
-          shadowOffset: { width: 0, height: 10 },
-          shadowOpacity: 0.1,
-          shadowRadius: 20,
+          shadowOffset: { width: 0, height: 8 }, // Adjusted shadow
+          shadowOpacity: 0.05, // Adjusted shadow
+          shadowRadius: 15, // Adjusted shadow
         }),
   },
   inputContainer: {
@@ -46,14 +47,14 @@ export const AuthStyles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: Colors.gray600, // Use a darker gray for labels
+    color: Colors.grayText, // Changed to grayText
     marginBottom: 8,
     fontWeight: '500',
   },
   input: {
     height: 50,
     borderWidth: 1,
-    borderColor: Colors.gray200, // Softer border color
+    borderColor: Colors.subtleBorder, // Changed to subtleBorder
     borderRadius: 12,
     paddingHorizontal: 16,
     backgroundColor: Colors.white,
@@ -63,7 +64,7 @@ export const AuthStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: Colors.gray200, // Softer border color
+    borderColor: Colors.subtleBorder, // Changed to subtleBorder
     borderRadius: 12,
     backgroundColor: Colors.white,
   },
@@ -84,14 +85,14 @@ export const AuthStyles = StyleSheet.create({
   loginButton: {
     height: 50,
     borderRadius: 12,
-    backgroundColor: Colors.primary, // Use primary color for login button
+    backgroundColor: Colors.primary, // Changed to primary
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
     marginBottom: 24,
   },
   loginLinkText: {
-    color: Colors.primaryLight, // Use primaryLight for link text
+    color: Colors.primary, // Changed to primary
     textAlign: 'center',
     fontWeight: '500',
   },
@@ -111,7 +112,7 @@ export const AuthStyles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: Colors.white, // White background
     borderWidth: 1,
-    borderColor: Colors.gray200, // Softer border
+    borderColor: Colors.subtleBorder, // Changed to subtleBorder
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 16,
@@ -122,14 +123,14 @@ export const AuthStyles = StyleSheet.create({
   signupPrimaryButton: {
     height: 50,
     borderRadius: 12,
-    backgroundColor: Colors.primary, // Use primary color for signup button
+    backgroundColor: Colors.primary, // Changed to primary
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
     flex: 1,
   },
   signupButtonText: {
-    color: Colors.primaryDark, // Use primaryDark for secondary button text
+    color: Colors.primary, // Changed to primary
     fontWeight: 'bold',
     fontSize: 16,
     marginLeft: 5,
@@ -144,7 +145,7 @@ export const AuthStyles = StyleSheet.create({
   cardTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: Colors.gray600, // Use a darker gray for card titles
+    color: Colors.black, // Changed to black
     marginBottom: 20,
     textAlign: 'center',
   },
