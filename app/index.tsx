@@ -9,7 +9,7 @@ export default function LandingPage() {
         <Image 
           source={require('../assets/images/logo.png')} 
           style={styles.logo}
-          tintColor={Colors.primary}
+          
         />
         
         <Text style={styles.title}>Welcome to Alumverse</Text>
@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     marginBottom: 30,
-    tintColor: Colors.primary,
   },
   title: {
     fontSize: 28,

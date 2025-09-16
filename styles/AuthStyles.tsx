@@ -14,7 +14,6 @@ export const AuthStyles = StyleSheet.create({
     width: 120,
     height: 120,
     marginBottom: 30,
-    tintColor: Colors.primary, // Changed to primary
   },
   cardContainer: {
     width: '100%',
