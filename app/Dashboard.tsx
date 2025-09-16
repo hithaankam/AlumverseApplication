@@ -5,18 +5,14 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import Colors from '../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import WelcomeScreen from './Welcome';
 import Feed from './feed'; // Import the actual Feed component
+import AlumniSearch from './AlumniSearch';
 
 // Placeholder Screens for other Tabs
 const JobPortalScreen = () => (
   <View style={styles.tabContent}>
     <Text style={styles.tabContentText}>Job Portal Content</Text>
-  </View>
-);
-
-const DirectoryScreen = () => (
-  <View style={styles.tabContent}>
-    <Text style={styles.tabContentText}>Directory Content</Text>
   </View>
 );
 
@@ -66,7 +62,6 @@ const Dashboard = () => {
       {/* Horizontal Top Tab Navigation */}
         <Tab.Navigator
           screenOptions={{
-            headerShown: false,
             tabBarActiveTintColor: Colors.primary,
             tabBarInactiveTintColor: Colors.grayText,
             tabBarStyle: styles.tabBar,
@@ -75,9 +70,10 @@ const Dashboard = () => {
             tabBarIndicatorStyle: styles.tabBarIndicator,
             tabBarScrollEnabled: true,
           }}>
+          <Tab.Screen name="Home" component={WelcomeScreen} />
           <Tab.Screen name="Feed" component={Feed} />
           <Tab.Screen name="Job Portal" component={JobPortalScreen} />
-          <Tab.Screen name="Directory" component={DirectoryScreen} />
+          <Tab.Screen name="Directory" component={AlumniSearch} />
           <Tab.Screen name="Opportunities" component={OpportunitiesScreen} />
           <Tab.Screen name="Events" component={EventsScreen} />
           <Tab.Screen name="Giving Back" component={GivingBackScreen} />
