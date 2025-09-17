@@ -9,11 +9,14 @@ import {
   Image,
   Dimensions,
   SafeAreaView,
-  FlatList
+  FlatList,
+  Animated
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import Colors from '../constants/Colors'; // Import Colors from constants
 import { getAllAlumni } from '../services/AlumService'; // Import getAllAlumni
+import ImageCarousel from './components/ImageCarousel';
 
 interface Alumni {
   id: string;
@@ -27,6 +30,15 @@ const WelcomeScreen = () => {
   const [query, setQuery] = useState("");
   const [allAlumni, setAllAlumni] = useState<Alumni[]>([]); // Initialize with empty array
   const [filteredAlumni, setFilteredAlumni] = useState<Alumni[]>([]);
+  const fadeAnim = useState(new Animated.Value(0))[0];
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
   // Fetch real alumni data on component mount
   const loadAlumni = () => {
@@ -62,15 +74,15 @@ const WelcomeScreen = () => {
     }
   }, [query, allAlumni]);
 
-  const handleProfileClick = (alumId) => {
-    // TODO: Implement navigation to user profile screen
-    console.log('Navigate to profile of:', alumId);
+  const handleProfileClick = (alum) => {
+    router.push(`/ViewProfile?userId=${alum.id}&userName=${alum.fullName}&userEmail=${alum.email}`);
   };
 
   return (
+    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
-          {/* Header with logo and tagline */}
+          {/* Header with logo */}
           <View style={styles.header}>
             <Image 
               source={require('../assets/images/logo.png')} 
@@ -103,7 +115,7 @@ const WelcomeScreen = () => {
                 data={filteredAlumni}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => handleProfileClick(item.id)}>
+                  <TouchableOpacity onPress={() => handleProfileClick(item)}>
                     <View style={styles.resultItem}>
                       <Text style={styles.resultName}>{item.fullName}</Text>
                       <Text style={{ color: Colors.gray500 }}>{item.email}</Text>
@@ -114,6 +126,9 @@ const WelcomeScreen = () => {
               />
             )}
           </View>
+
+          {/* Image Carousel */}
+          <ImageCarousel />
 
           {/* Stats section */}
           <View style={styles.statsContainer}>
@@ -139,6 +154,7 @@ const WelcomeScreen = () => {
         <View style={[styles.shape, styles.shapeGreen]} />
       </ScrollView>
     </SafeAreaView>
+  </Animated.View>
   );
 };
 

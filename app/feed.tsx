@@ -10,26 +10,56 @@ import {
   ActivityIndicator,
   Alert,
   Keyboard,
-  SafeAreaView // Added SafeAreaView
+  Image,
+  Animated
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import Post from './components/Post';
 import { getFeedPosts, createNewPost } from '@/services/AlumService';
 import { PostProps } from './components/Post';
+import { useAuth } from '../context/AuthContext';
 
 const FeedScreen = () => {
+  const { user } = useAuth();
   const [posts, setPosts] = useState<PostProps[]>([]);
   const [newPost, setNewPost] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [refreshing, setRefreshing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [showPostModal, setShowPostModal] = useState(false);
+  const fadeAnim = useState(new Animated.Value(0))[0];
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 600,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  const SkeletonCard = () => (
+    <View style={styles.skeletonCard}>
+      <View style={styles.skeletonHeader}>
+        <View style={styles.skeletonAvatar} />
+        <View style={styles.skeletonText} />
+      </View>
+      <View style={styles.skeletonContent} />
+    </View>
+  );
 
   const fetchPosts = useCallback(async () => {
     try {
       const response = await getFeedPosts();
       if (Array.isArray(response.data)) {
-        setPosts(response.data);
+        // Sort posts by latest first (assuming posts have timestamp or createdAt)
+        const sortedPosts = response.data.sort((a, b) => 
+          new Date(b.createdAt || b.timestamp || 0).getTime() - 
+          new Date(a.createdAt || a.timestamp || 0).getTime()
+        );
+        setPosts(sortedPosts);
       } else {
         throw new Error('Invalid posts data format');
       }
@@ -58,7 +88,8 @@ const FeedScreen = () => {
 
     try {
       const postData = {
-        authorId: '686f98af573d2c5ecd29608c', // This should come from auth context
+        authorId: user?.id || 'anonymous',
+        authorName: user?.fullName || 'Anonymous User',
         content: newPost,
       };
 
@@ -82,55 +113,81 @@ const FeedScreen = () => {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={styles.centered}> {/* Wrap in SafeAreaView */}
-        <ActivityIndicator size="large" color={Colors.primary} />
-        <Text style={styles.loadingText}>Loading posts...</Text>
-      </SafeAreaView>
+      <View style={styles.container}>
+        <View style={styles.modernPostCard}>
+          <View style={styles.userRow}>
+            <View style={styles.skeletonAvatar} />
+            <View style={styles.skeletonText} />
+          </View>
+        </View>
+        <SkeletonCard />
+        <SkeletonCard />
+        <SkeletonCard />
+      </View>
     );
   }
 
   if (error) {
     return (
-      <SafeAreaView style={styles.centered}> {/* Wrap in SafeAreaView */}
+      <View style={styles.centered}>
+        <Ionicons name="cloud-offline-outline" size={64} color={Colors.gray400} />
         <Text style={styles.errorText}>{error}</Text>
-        <TouchableOpacity
-          style={styles.retryButton}
-          onPress={fetchPosts}
-        >
-          <Text style={styles.retryText}>Retry</Text>
+        <TouchableOpacity style={styles.retryButton} onPress={fetchPosts}>
+          <Text style={styles.retryText}>Try Again</Text>
         </TouchableOpacity>
-      </SafeAreaView>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}> {/* Main SafeAreaView */}
-      <View style={styles.container}>
-        <View style={styles.postInputContainer}>
-          <TextInput
-            style={styles.postInput}
-            placeholder="Share something with your network..."
-            placeholderTextColor={Colors.gray400} // Use new gray shade
-            value={newPost}
-            onChangeText={setNewPost}
-            multiline
-            editable={!isSubmitting}
+    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+      {/* Modern Post Input Card */}
+      <View style={styles.modernPostCard}>
+        <View style={styles.userRow}>
+          <Image 
+            source={require('../assets/images/icon.png')} 
+            style={styles.userAvatar} 
           />
-          <TouchableOpacity
-            style={[
-              styles.postButton,
-              (!newPost.trim() || isSubmitting) && styles.disabledButton
-            ]}
-            onPress={handlePostSubmit}
-            disabled={!newPost.trim() || isSubmitting}
-          >
-            {isSubmitting ? (
-              <ActivityIndicator color={Colors.white} />
-            ) : (
-              <Text style={styles.postButtonText}>Post</Text>
+          <View style={styles.postInputContainer}>
+            <TextInput
+              style={styles.postInput}
+              placeholder="What's on your mind?"
+              placeholderTextColor="#9AA0A6"
+              value={newPost}
+              onChangeText={setNewPost}
+              multiline
+              editable={!isSubmitting}
+            />
+            {newPost.trim() && (
+              <TouchableOpacity
+                style={[styles.postButton, isSubmitting && styles.disabledButton]}
+                onPress={handlePostSubmit}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <ActivityIndicator color={Colors.white} size="small" />
+                ) : (
+                  <Text style={styles.postButtonText}>Post</Text>
+                )}
+              </TouchableOpacity>
             )}
+          </View>
+        </View>
+        <View style={styles.postActions}>
+          <TouchableOpacity style={styles.actionButton}>
+            <Ionicons name="image-outline" size={20} color="#4CAF50" />
+            <Text style={styles.actionText}>Photo</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.actionButton}>
+            <Ionicons name="videocam-outline" size={20} color="#FF5722" />
+            <Text style={styles.actionText}>Video</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.actionButton}>
+            <Ionicons name="bar-chart-outline" size={20} color="#2196F3" />
+            <Text style={styles.actionText}>Poll</Text>
           </TouchableOpacity>
         </View>
+      </View>
 
         <FlatList
           data={posts}
@@ -143,76 +200,148 @@ const FeedScreen = () => {
               <Text style={styles.emptyText}>No posts yet. Be the first to post!</Text>
             </View>
           }
-          contentContainerStyle={posts.length === 0 && styles.emptyListContainer}
+          contentContainerStyle={[
+            styles.listContent,
+            posts.length === 0 && styles.emptyListContainer
+          ]}
         />
-      </View>
-    </SafeAreaView>
-  );
+
+        {/* Decorative shapes */}
+        <View style={[styles.shape, styles.shapeBlue]} />
+        <View style={[styles.shape, styles.shapeRed]} />
+        <View style={[styles.shape, styles.shapeYellow]} />
+        <View style={[styles.shape, styles.shapeGreen]} />
+      </Animated.View>
+    );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: Colors.gray50, // Light background for the entire screen
-  },
   container: {
     flex: 1,
-    backgroundColor: Colors.gray50, // Light background for the feed area
-    padding: 15,
+    backgroundColor: Colors.gray50,
   },
   centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.gray50, // Consistent background
+    backgroundColor: Colors.gray50,
   },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: Colors.gray500, // Darker gray for loading text
+  modernPostCard: {
+    backgroundColor: Colors.white,
+    borderRadius: 12,
+    padding: 16,
+    marginHorizontal: 16,
+    marginBottom: 16,
+    maxWidth: 600,
+    alignSelf: 'center',
+    width: '100%',
+    shadowColor: Colors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  userRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  userAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 12,
   },
   postInputContainer: {
-    marginBottom: 15,
+    flex: 1,
+    backgroundColor: Colors.gray50,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    minHeight: 60,
+    justifyContent: 'center',
   },
   postInput: {
-    borderWidth: 1,
-    borderColor: Colors.gray200, // Softer border color
-    borderRadius: 8,
-    padding: 12,
-    minHeight: 80,
-    marginBottom: 10,
-    backgroundColor: Colors.white,
-    fontSize: 16,
-    color: Colors.gray600, // Input text color
+    fontSize: 17,
+    color: Colors.black,
+    marginBottom: 8,
+    minHeight: 24,
   },
   postButton: {
-    backgroundColor: Colors.primary, // Use primary color for post button
-    padding: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 50,
+    backgroundColor: Colors.primary,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 16,
+    alignSelf: 'flex-end',
   },
   disabledButton: {
-    backgroundColor: Colors.gray200, // Lighter gray for disabled button
+    backgroundColor: Colors.gray300,
   },
   postButtonText: {
-    color: Colors.white, // White text for post button
+    color: Colors.white,
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 14,
+  },
+  postActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: Colors.gray100,
+  },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  actionText: {
+    marginLeft: 6,
+    color: Colors.gray500,
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  skeletonCard: {
+    backgroundColor: Colors.white,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+  },
+  skeletonHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  skeletonAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.gray200,
+    marginRight: 12,
+  },
+  skeletonText: {
+    flex: 1,
+    height: 16,
+    backgroundColor: Colors.gray200,
+    borderRadius: 8,
+  },
+  skeletonContent: {
+    height: 80,
+    backgroundColor: Colors.gray200,
+    borderRadius: 8,
   },
   errorText: {
-    color: Colors.error, // Use new error color
+    color: Colors.error,
     marginBottom: 10,
     fontSize: 16,
   },
   retryButton: {
     padding: 10,
-    backgroundColor: Colors.primaryLight, // Use primaryLight for retry button
+    backgroundColor: Colors.primaryLight,
     borderRadius: 8,
   },
-  retryButtonText: {
-    color: Colors.primary, // Use primary for retry text
+  retryText: {
+    color: Colors.primary,
     fontWeight: 'bold',
   },
   emptyContainer: {
@@ -226,8 +355,44 @@ const styles = StyleSheet.create({
   emptyText: {
     textAlign: 'center',
     marginTop: 20,
-    color: Colors.gray500, // Darker gray for empty text
+    color: Colors.gray500,
     fontSize: 16,
+  },
+  listContent: {
+    paddingVertical: 8,
+  },
+  shape: {
+    position: 'absolute',
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    zIndex: -1,
+  },
+  shapeBlue: {
+    backgroundColor: 'rgba(43, 108, 176, 0.1)',
+    top: '15%',
+    left: -40,
+  },
+  shapeRed: {
+    backgroundColor: 'rgba(211, 47, 47, 0.1)',
+    top: '40%',
+    right: -40,
+    width: 60,
+    height: 60,
+  },
+  shapeYellow: {
+    backgroundColor: 'rgba(255, 193, 7, 0.1)',
+    bottom: '20%',
+    left: -30,
+    width: 100,
+    height: 100,
+  },
+  shapeGreen: {
+    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+    bottom: '10%',
+    right: -20,
+    width: 70,
+    height: 70,
   },
 });
 
