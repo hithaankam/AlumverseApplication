@@ -13,25 +13,32 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Colors from '../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../context/AuthContext';
 
 const EditProfile = () => {
   const insets = useSafeAreaInsets();
-  const [fullName, setFullName] = useState('John Doe');
-  const [headline, setHeadline] = useState('Software Engineer at Google | Class of 2020');
-  const [location, setLocation] = useState('San Francisco, CA');
-  const [about, setAbout] = useState(
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-  );
-  const [education, setEducation] = useState('University of Example - B.S. Computer Science (2016-2020)');
-  const [experience, setExperience] = useState(
-    'Software Engineer at Google (2020-Present)\nIntern at Microsoft (Summer 2019)'
-  );
-  const [skills, setSkills] = useState('React Native, JavaScript, Python, AWS, UI/UX Design');
+  const { user } = useAuth();
+  const [fullName, setFullName] = useState(user?.fullName || '');
+  const [headline, setHeadline] = useState(user?.headline || '');
+  const [location, setLocation] = useState(user?.location || '');
+  const [about, setAbout] = useState(user?.about || '');
+  const [education, setEducation] = useState(user?.education || '');
+  const [experience, setExperience] = useState(user?.experience || '');
+  const [skills, setSkills] = useState(user?.skills || '');
 
   const handleSave = () => {
     // Here you would typically send the updated data to your backend
-    Alert.alert('Profile Saved', 'Your profile has been updated successfully!');
-    router.back(); // Go back to ViewProfile after saving
+    // For demo, we'll just show success and go back
+    Alert.alert(
+      'Profile Saved', 
+      'Your profile has been updated successfully!',
+      [
+        {
+          text: 'OK',
+          onPress: () => router.back()
+        }
+      ]
+    );
   };
 
   return (

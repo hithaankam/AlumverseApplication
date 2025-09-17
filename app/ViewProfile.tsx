@@ -1,15 +1,56 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import Colors from '../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../context/AuthContext';
 
 const ViewProfile = () => {
   const insets = useSafeAreaInsets();
+  const { user } = useAuth();
+  const params = useLocalSearchParams();
+  const [profileUser, setProfileUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  console.log('=== ViewProfile Debug ===');
+  console.log('user from useAuth:', user);
+  console.log('user?.fullName:', user?.fullName);
+  console.log('user?.email:', user?.email);
+
+  // Check if viewing own profile or another user's profile
+  const isOwnProfile = !params.userId || params.userId === user?.id;
+
+  console.log('ViewProfile Debug:');
+  console.log('params.userId:', params.userId);
+  console.log('user?.id:', user?.id);
+  console.log('isOwnProfile:', isOwnProfile);
+  console.log('user object:', user);
+
+  useEffect(() => {
+    if (!isOwnProfile && params.userId) {
+      // We know email and name from the search results
+      setProfileUser({
+        id: params.userId,
+        fullName: params.userName || '-',
+        email: params.userEmail || '-',
+        headline: '-',
+        location: '-'
+      });
+    }
+  }, [params.userId, params.userName, params.userEmail, isOwnProfile]);
+
+  const displayUser = isOwnProfile ? user : profileUser;
+
+  // Debug: Let's see what's in the user object
+  console.log('Current user data:', user);
+  console.log('Display user data:', displayUser);
+  console.log('Is own profile:', isOwnProfile);
 
   const handleEditProfile = () => {
-    router.push('/EditProfile');
+    if (isOwnProfile) {
+      router.push('/EditProfile');
+    }
   };
 
   return (
@@ -19,47 +60,48 @@ const ViewProfile = () => {
           <Ionicons name="arrow-back" size={24} color={Colors.primary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Profile</Text>
-        <TouchableOpacity onPress={handleEditProfile} style={styles.editButton}>
-          <Ionicons name="create-outline" size={24} color={Colors.primary} />
-          <Text style={styles.editButtonText}>Edit</Text>
-        </TouchableOpacity>
+        {isOwnProfile && (
+          <TouchableOpacity onPress={handleEditProfile} style={styles.editButton}>
+            <Ionicons name="create-outline" size={24} color={Colors.primary} />
+            <Text style={styles.editButtonText}>Edit</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {/* Profile Picture and Basic Info */}
         <View style={styles.profileHeader}>
           <Image source={require('../assets/images/icon.png')} style={styles.profilePicture} />
-          <Text style={styles.profileName}>John Doe</Text>
-          <Text style={styles.profileHeadline}>Software Engineer at Google | Class of 2020</Text>
-          <Text style={styles.profileLocation}>San Francisco, CA</Text>
+          <Text style={styles.profileName}>{user?.fullName || 'No Name'}</Text>
+          <Text style={styles.profileEmail}>{user?.email || 'No Email'}</Text>
+          <Text style={styles.profileHeadline}>{user?.headline || '-'}</Text>
+          <Text style={styles.profileLocation}>{user?.location || '-'}</Text>
         </View>
 
         {/* About Section */}
         <View style={styles.sectionCard}>
           <Text style={styles.sectionTitle}>About</Text>
           <Text style={styles.sectionContent}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            {user?.about || '-'}
           </Text>
         </View>
 
         {/* Education Section */}
         <View style={styles.sectionCard}>
           <Text style={styles.sectionTitle}>Education</Text>
-          <Text style={styles.sectionContent}>University of Example - B.S. Computer Science (2016-2020)</Text>
+          <Text style={styles.sectionContent}>{user?.education || '-'}</Text>
         </View>
 
         {/* Experience Section */}
         <View style={styles.sectionCard}>
           <Text style={styles.sectionTitle}>Experience</Text>
-          <Text style={styles.sectionContent}>Software Engineer at Google (2020-Present)</Text>
-          <Text style={styles.sectionContent}>Intern at Microsoft (Summer 2019)</Text>
+          <Text style={styles.sectionContent}>{user?.experience || '-'}</Text>
         </View>
 
         {/* Skills Section */}
         <View style={styles.sectionCard}>
           <Text style={styles.sectionTitle}>Skills</Text>
-          <Text style={styles.sectionContent}>React Native, JavaScript, Python, AWS, UI/UX Design</Text>
+          <Text style={styles.sectionContent}>{user?.skills || '-'}</Text>
         </View>
 
         {/* Rewards Section (moved here) */}
@@ -142,6 +184,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: Colors.black,
+    marginBottom: 5,
+  },
+  profileEmail: {
+    fontSize: 16,
+    color: Colors.gray500,
     marginBottom: 5,
   },
   profileHeadline: {
