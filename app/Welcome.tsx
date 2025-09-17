@@ -13,8 +13,10 @@ import {
   Animated
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import Colors from '../constants/Colors'; // Import Colors from constants
 import { getAllAlumni } from '../services/AlumService'; // Import getAllAlumni
+import ImageCarousel from './components/ImageCarousel';
 
 interface Alumni {
   id: string;
@@ -72,9 +74,8 @@ const WelcomeScreen = () => {
     }
   }, [query, allAlumni]);
 
-  const handleProfileClick = (alumId) => {
-    // TODO: Implement navigation to user profile screen
-    console.log('Navigate to profile of:', alumId);
+  const handleProfileClick = (alum) => {
+    router.push(`/ViewProfile?userId=${alum.id}&userName=${alum.fullName}&userEmail=${alum.email}`);
   };
 
   return (
@@ -114,7 +115,7 @@ const WelcomeScreen = () => {
                 data={filteredAlumni}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => handleProfileClick(item.id)}>
+                  <TouchableOpacity onPress={() => handleProfileClick(item)}>
                     <View style={styles.resultItem}>
                       <Text style={styles.resultName}>{item.fullName}</Text>
                       <Text style={{ color: Colors.gray500 }}>{item.email}</Text>
@@ -125,6 +126,9 @@ const WelcomeScreen = () => {
               />
             )}
           </View>
+
+          {/* Image Carousel */}
+          <ImageCarousel />
 
           {/* Stats section */}
           <View style={styles.statsContainer}>
