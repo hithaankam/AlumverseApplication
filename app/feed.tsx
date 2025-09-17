@@ -18,8 +18,10 @@ import Colors from '../constants/Colors';
 import Post from './components/Post';
 import { getFeedPosts, createNewPost } from '@/services/AlumService';
 import { PostProps } from './components/Post';
+import { useAuth } from '../context/AuthContext';
 
 const FeedScreen = () => {
+  const { user } = useAuth();
   const [posts, setPosts] = useState<PostProps[]>([]);
   const [newPost, setNewPost] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -86,7 +88,8 @@ const FeedScreen = () => {
 
     try {
       const postData = {
-        authorId: '686f98af573d2c5ecd29608c', // This should come from auth context
+        authorId: user?.id || 'anonymous',
+        authorName: user?.fullName || 'Anonymous User',
         content: newPost,
       };
 

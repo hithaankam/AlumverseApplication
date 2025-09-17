@@ -16,7 +16,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { AxiosError } from 'axios';
 import { AuthStyles } from '../styles/AuthStyles';
 import Colors from '../constants/Colors'; // Import Colors
-import { authService } from '@/services/AlumService'; 
+import { authService } from '@/services/AlumService';
+import { useAuth } from '../context/AuthContext'; 
 
 interface AuthFormState {
   fullName?: string;
@@ -30,6 +31,7 @@ interface AuthFormState {
 const AuthScreen = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const { login } = useAuth();
   const [isFlipped, setIsFlipped] = useState(false);
   const flipAnim = useRef(new Animated.Value(0)).current;
   
@@ -85,19 +87,33 @@ const AuthScreen = () => {
   };
 
 const handleLogin = async () => {
-  console.log("1. Login button pressed."); // See if the function starts
-  console.log("2. Sending data:", { email: loginForm.email, password: loginForm.password }); // Check the data
   try {
     const response = await authService.login({
       email: loginForm.email,
       password: loginForm.password,
     });
-    console.log("3. API call successful:", response.data); // See the response
+    
+    console.log('=== Login Response ===');
+    console.log('Full response:', response);
+    console.log('Access token:', response.data.accessToken);
+    console.log('User data:', response.data.user);
+    
     authService.storeToken(response.data.accessToken);
+    
+    // Create user object from login form since backend doesn't return user data
+    const userData = response.data.user || {
+      email: loginForm.email,
+      fullName: loginForm.email.split('@')[0], // Use email prefix as name
+      id: 'user-' + Date.now()
+    };
+    
+    // Store user data in context
+    login(response.data.accessToken, userData);
+    
     router.push('/Dashboard');
   } catch (error) {
-    console.error("4. API call failed:", error); // See the exact error
-    // ... your alert code
+    console.error("Login failed:", error);
+    Alert.alert('Login Error', 'Invalid credentials. Please try again.');
   }
 };
   const handleSignup = async () => {
@@ -124,6 +140,7 @@ const handleLogin = async () => {
 
         // Store the token and navigate to the home screen
         authService.storeToken(loginResponse.data.accessToken);
+        login(loginResponse.data.accessToken, loginResponse.data.user);
         router.push('/Dashboard');
 
     } catch (error) {

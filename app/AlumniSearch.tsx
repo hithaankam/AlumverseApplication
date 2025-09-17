@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, FlatList, SafeAreaView, Animated } from 'react-native';
+import { View, Text, TextInput, StyleSheet, FlatList, SafeAreaView, Animated, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getAllAlumni } from '../services/AlumService';
 import Colors from '../constants/Colors';
+import { router } from 'expo-router';
 
 interface Alumni {
   id: string;
@@ -61,6 +62,10 @@ const AlumniSearch = () => {
     }
   }, [query, allAlumni]);
 
+  const handleProfileClick = (alum) => {
+    router.push(`/ViewProfile?userId=${alum.id}&userName=${alum.fullName}&userEmail=${alum.email}`);
+  };
+
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       {/* Header */}
@@ -110,19 +115,21 @@ const AlumniSearch = () => {
         data={filteredAlumni}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.resultItem}>
-            <View style={styles.avatarContainer}>
-              <Text style={styles.avatarText}>
-                {item.fullName ? item.fullName.charAt(0).toUpperCase() : '?'}
-              </Text>
+          <TouchableOpacity onPress={() => handleProfileClick(item)}>
+            <View style={styles.resultItem}>
+              <View style={styles.avatarContainer}>
+                <Text style={styles.avatarText}>
+                  {item.fullName ? item.fullName.charAt(0).toUpperCase() : '?'}
+                </Text>
+              </View>
+              <View style={styles.userInfo}>
+                <Text style={styles.resultName}>
+                  {item.fullName || 'Profile coming soon...'}
+                </Text>
+                <Text style={styles.resultEmail}>{item.email}</Text>
+              </View>
             </View>
-            <View style={styles.userInfo}>
-              <Text style={styles.resultName}>
-                {item.fullName || 'Profile coming soon...'}
-              </Text>
-              <Text style={styles.resultEmail}>{item.email}</Text>
-            </View>
-          </View>
+          </TouchableOpacity>
         )}
         onRefresh={loadAlumni}
         refreshing={loading}

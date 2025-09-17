@@ -6,8 +6,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { likePost } from '@/services/AlumService';
 
 export interface PostProps {
-  id: string; // ✅ CHANGED: back to `id`
+  id: string;
   authorId: string;
+  authorName?: string; // Add author name field
   content: string;
   avatar?: string;
   likesCount?: number;
@@ -59,7 +60,7 @@ const Post = ({ post }: { post: PostProps }) => {
           style={styles.avatar}
         />
         <View style={styles.userInfo}>
-          <Text style={styles.author}>{post.authorId}</Text>
+          <Text style={styles.author}>{post.authorName || post.authorId}</Text>
           <Text style={styles.timestamp}>{formatRelativeTime(post.timestamp)}</Text>
         </View>
       </View>
