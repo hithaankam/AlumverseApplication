@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // IMPORTANT: Replace with your computer's actual local network IP address
-const API_BASE_URL = "https://alumversebackend-production-8cdc.up.railway.app/api/auth"; 
+const API_BASE_URL = "https://alumversebackend-production-8cdc.up.railway.app/api"; 
 
 // --- Create a dedicated Axios instance ---
 const apiClient = axios.create({
